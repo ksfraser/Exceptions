@@ -53,6 +53,7 @@ final class DefinedExceptionsTest extends TestCase
             ['ClassRenamedDeprecException'],
             ['DataAccessDeniedException'],
             ['ModuleAccessDeniedException'],
+            ['ValueSetNoReplaceException'],
         ];
     }
 }
