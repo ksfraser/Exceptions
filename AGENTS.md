@@ -62,6 +62,47 @@ public function __construct(
 }
 ```
 
+### Module-Specific Exceptions
+
+For modules that previously used deep inheritance with type validation in magic methods:
+
+**OLD Pattern (Legacy):**
+```php
+// In BaseCRM class with magic __set
+public function __set($k, $v) {
+    validate_type($k, $v);  // Type validation in magic setter
+    $this->$k = $v;
+    $this->notify("NOTIFY_SET_{$k}", $v);  // Event notification
+}
+```
+
+**NEW Pattern:**
+```php
+// Module exception extends library base
+use Ksfraser\Exceptions\CRM\CRMException as BaseCRMException;
+
+class CRMException extends BaseCRMException
+{
+    protected string $debtorNo;
+    protected array $context;
+
+    public function __construct(
+        string $message, 
+        string $debtorNo = '', 
+        array $context = [],
+        int $code = 0, 
+        ?\Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+        $this->debtorNo = $debtorNo;
+        $this->context = $context;
+    }
+    
+    public function getDebtorNo(): string { return $this->debtorNo; }
+    public function getContext(): array { return $this->context; }
+}
+```
+
 ---
 
 ## Coding Standards
